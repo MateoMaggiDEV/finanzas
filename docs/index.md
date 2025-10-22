@@ -1,11 +1,17 @@
+---
+layout: default
+title: "NombreDeLaApp"
+nav_order: 1
+---
+
 # NombreDeLaApp
 
 Plataforma integral de finanzas y productividad para agencias de edición de video. Construido con Next.js 14, Prisma y tRPC.
 
 ## ⚙️ Requisitos
 
-- Node.js >= 18
-- pnpm >= 8
+- Node.js \>= 18
+- pnpm \>= 8
 - PostgreSQL (local o remoto)
 
 ## 🚀 Puesta en marcha local
@@ -66,7 +72,7 @@ Configurada con `next-intl`. Locale por defecto `es-AR`, fallback `en-US`. Las m
 
 - Separación por usuario mediante `userId` en todas las tablas y helpers de acceso.
 - Validación Zod en formularios y routers tRPC.
-- Uploads limitados a PDF/JPG/PNG <= 5MB (pendiente de integrar almacenamiento externo en producción).
+- Uploads limitados a PDF/JPG/PNG \<= 5MB (pendiente de integrar almacenamiento externo en producción).
 
 ## 🧪 Testing
 
@@ -83,12 +89,6 @@ Para ejecutar Playwright en CI, instalar browsers con `pnpm exec playwright inst
 2. Configurar variables de entorno (`.env.example`).
 3. Usar Neon o supabase como Postgres.
 4. Habilitar cron (GitHub Actions o Vercel Cron) apuntando a `/api/cron/daily` y `/api/cron/weekly`.
-
-### GitHub Pages (landing estática)
-
-- Habilita GitHub Pages usando la carpeta `docs/` como fuente.
-- Personaliza el contenido en `docs/index.md` para reflejar tu instancia.
-- Esta opción publica únicamente la documentación/landing; la app completa requiere un entorno con Node.js y PostgreSQL.
 
 ### Docker
 
@@ -119,4 +119,4 @@ pnpm db:seed
 
 ## 📚 Más información
 
-Consulta `docs/` (futuro) para guías de integración adicionales.
+Consulta `docs/` para guías de integración adicionales.
