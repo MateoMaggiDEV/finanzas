@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "finances": "Finanzas",
+    "time": "Tiempo",
+    "clients": "Clientes",
+    "projects": "Proyectos",
+    "reports": "Reportes",
+    "automation": "Automatizaciones",
+    "settings": "Ajustes"
+  },
+  "dashboard": {
+    "welcome": "Bienvenido a tu cockpit financiero y de foco"
+  }
+}

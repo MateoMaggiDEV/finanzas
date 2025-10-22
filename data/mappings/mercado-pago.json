@@ -1,0 +1,11 @@
+{
+  "id": "mercado-pago",
+  "name": "Mercado Pago",
+  "delimiter": ",",
+  "mapping": {
+    "date": "Fecha",
+    "amountMinor": "Importe",
+    "description": "Descripción",
+    "type": "Tipo"
+  }
+}

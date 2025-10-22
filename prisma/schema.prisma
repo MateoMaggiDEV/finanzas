@@ -1,0 +1,247 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(cuid())
+  email         String   @unique
+  name          String?
+  passwordHash  String?
+  image         String?
+  accounts      Account[]
+  transactions  Transaction[]
+  budgets       Budget[]
+  categories    Category[]
+  rules         Rule[]
+  clients       Client[]
+  projects      Project[]
+  timeEntries   TimeEntry[]
+  interruptions Interruption[]
+  goals         Goal[]
+  settings      Setting[]
+  invoices      Invoice[]
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deletedAt     DateTime?
+}
+
+model Account {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  name       String
+  institution String
+  currency   String
+  balanceMinor Int    @default(0)
+  transactions Transaction[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  @@index([userId, name])
+}
+
+model Counterparty {
+  id      String   @id @default(cuid())
+  user    User     @relation(fields: [userId], references: [id])
+  userId  String
+  name    String
+  transactions Transaction[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  @@index([userId, name])
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  user      User       @relation(fields: [userId], references: [id])
+  userId    String
+  name      String
+  parent    Category?  @relation("CategoryToCategory", fields: [parentId], references: [id])
+  parentId  String?
+  children  Category[] @relation("CategoryToCategory")
+  transactions Transaction[]
+  budgets   Budget[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  @@index([userId, name])
+}
+
+model Budget {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+  period     String
+  limitMinor Int
+  currency   String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime?
+  @@unique([userId, categoryId, period])
+}
+
+model Rule {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  expression  String
+  mode        String
+  categoryId  String?
+  clientId    String?
+  projectId   String?
+  tags        String[] @default([])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+}
+
+model Client {
+  id                  String    @id @default(cuid())
+  user                User      @relation(fields: [userId], references: [id])
+  userId              String
+  name                String
+  defaultRatePerHourMinor Int?
+  projects            Project[]
+  invoices            Invoice[]
+  transactions        Transaction[]
+  timeEntries         TimeEntry[]
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  deletedAt           DateTime?
+  @@index([userId, name])
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  client       Client?  @relation(fields: [clientId], references: [id])
+  clientId     String?
+  name         String
+  ratePerHourMinor Int?
+  status       String
+  transactions Transaction[]
+  timeEntries  TimeEntry[]
+  invoices     Invoice[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  deletedAt    DateTime?
+  @@index([userId, clientId, status])
+}
+
+model Transaction {
+  id            String   @id @default(cuid())
+  user          User     @relation(fields: [userId], references: [id])
+  userId        String
+  account       Account  @relation(fields: [accountId], references: [id])
+  accountId     String
+  type          String
+  amountMinor   Int
+  currency      String
+  date          DateTime
+  description   String
+  counterparty  Counterparty? @relation(fields: [counterpartyId], references: [id])
+  counterpartyId String?
+  category      Category? @relation(fields: [categoryId], references: [id])
+  categoryId    String?
+  project       Project? @relation(fields: [projectId], references: [id])
+  projectId     String?
+  client        Client? @relation(fields: [clientId], references: [id])
+  clientId      String?
+  tags          String[] @default([])
+  receiptUrl    String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deletedAt     DateTime?
+  @@index([userId, date])
+  @@index([userId, clientId])
+  @@index([userId, categoryId])
+}
+
+model TimeEntry {
+  id          String   @id @default(cuid())
+  user        User     @relation(fields: [userId], references: [id])
+  userId      String
+  start       DateTime
+  end         DateTime
+  durationMin Int
+  client      Client? @relation(fields: [clientId], references: [id])
+  clientId    String?
+  project     Project? @relation(fields: [projectId], references: [id])
+  projectId   String?
+  task        String?
+  billable    Boolean  @default(false)
+  deepWork    Boolean  @default(false)
+  source      String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  @@index([userId, start])
+}
+
+model Interruption {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  at        DateTime
+  minutes   Int
+  reason    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  @@index([userId, at])
+}
+
+model Goal {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  type      String
+  target    Float
+  current   Float
+  period    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  @@index([userId, type, period])
+}
+
+model Setting {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  key       String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime?
+  @@unique([userId, key])
+}
+
+model Invoice {
+  id         String   @id @default(cuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  client     Client   @relation(fields: [clientId], references: [id])
+  clientId   String
+  project    Project? @relation(fields: [projectId], references: [id])
+  projectId  String?
+  issueDate  DateTime
+  items      Json
+  totalMinor Int
+  currency   String
+  status     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  deletedAt  DateTime?
+  @@index([userId, clientId])
+}
