@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "finances": "Finances",
+    "time": "Time",
+    "clients": "Clients",
+    "projects": "Projects",
+    "reports": "Reports",
+    "automation": "Automation",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "welcome": "Welcome to your finance and focus cockpit"
+  }
+}

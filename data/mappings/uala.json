@@ -1,0 +1,11 @@
+{
+  "id": "uala",
+  "name": "Ualá",
+  "delimiter": ",",
+  "mapping": {
+    "date": "Fecha",
+    "amountMinor": "Monto",
+    "description": "Detalle",
+    "type": "Movimiento"
+  }
+}
